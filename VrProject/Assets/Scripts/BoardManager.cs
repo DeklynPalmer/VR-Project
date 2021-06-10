@@ -44,6 +44,8 @@ public class BoardManager : MonoBehaviour
 
     void OnTriggerStay(Collider collider)
     {
+        Debug.Log(collider.name);
+
         /* Check if the collision is with the Player. */
         if (collider.gameObject == m_Player)
             m_PlayerInside = true;
@@ -124,7 +126,7 @@ public class BoardManager : MonoBehaviour
             return;
 
         /* Go through the Boards. */
-        for (int i = m_Boards.Length; i >= 0; i--)
+        for (int i = m_Boards.Length - 1; i >= 0; i--)
         {
             /* Check if they are Activated. */
             if (m_Boards[i].activeSelf)
