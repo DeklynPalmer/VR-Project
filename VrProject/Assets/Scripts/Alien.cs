@@ -16,6 +16,9 @@ public class Alien : MonoBehaviour
     public float m_AttackTime = 3.0f;
     private float m_MaxAttackTime;
 
+    [Header("Damage Values:")]
+    public int m_AttackDamage = 10;
+
     private BoardManager m_TargetWindow;
     private NavMeshAgent m_Agent;
 
@@ -46,36 +49,83 @@ public class Alien : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        /* If the Window isn't Empty. */
-        if(!m_TargetWindow.IsWindowEmpty() && m_TargetWindow)
+        if (m_TargetWindow)
         {
-            /* If the Attack Time hasn't fully elapsed. */
-            if (m_AttackTime < m_MaxAttackTime)
-                m_AttackTime += Time.deltaTime;
+            /* If the Window isn't Empty. */
+            if (!m_TargetWindow.IsWindowEmpty())
+            {
+                /* If the Attack Time hasn't fully elapsed. */
+                if (m_AttackTime < m_MaxAttackTime)
+                    m_AttackTime += Time.deltaTime;
 
-            /* If it has. */
+                /* If it has. */
+                else
+                {
+                    /* Set the Proper Targets. */
+                    m_TargetWindow.DetachBoard(gameObject);
+                    m_Agent.SetDestination(m_TargetWindow.transform.position);
+
+                    /* Reset the Attack Time. */
+                    m_AttackTime = 0.0f;
+                }
+            }
+
+            /* If the Window is Empty. */
             else
             {
-                /* Set the Proper Targets. */
-                m_TargetWindow.DetachBoard(gameObject);
-                m_Agent.SetDestination(m_TargetWindow.transform.position);
-
-                /* Reset the Attack Time. */
-                m_AttackTime = 0.0f;
+                /* No Need to focus on the Window. */
+                m_TargetWindow = null;
             }
         }
 
-        /* If the Window is Empty. */
         else
         {
             /* Move onto the Player. */
             m_Agent.SetDestination(m_Player.position);
+        }
+    }
 
-            /* No Need to focus on the Window. */
-            m_TargetWindow = null;
+    private void OnTriggerStay(Collider other)
+    {
+        /* If the Collider that has entered the box trigger is attached to the Player. */
+        if (other.gameObject.name == m_Player.name)
+        {
+            /* If we aren't targeting the window. */
+            if(!m_TargetWindow)
+            {
+                Debug.Log("Trying to Attack the Player.");
+                /* If the Attack Time hasn't fully elapsed. */
+                if (m_AttackTime < m_MaxAttackTime)
+                    m_AttackTime += Time.deltaTime;
+
+                /* If it has. */
+                else
+                {
+                    Debug.Log("Attacked the Player.");
+                    /* Damage the Player. */
+                    Health playerHealth = m_Player.GetComponent<Health>();
+                    playerHealth.DetachHealth(m_AttackDamage);
+
+                    /* Reset the Attack Time. */
+                    m_AttackTime = 0.0f;
+                }
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        /* If the Collider that has entered the box trigger is attached to the Player. */
+        if (other.gameObject == m_Player)
+        {
+            /* If we aren't targeting the window. */
+            if (!m_TargetWindow)
+            {
+                /* Reset the Attack Timer. */
+                m_AttackTime = 0.0f;
+            }
         }
     }
 }

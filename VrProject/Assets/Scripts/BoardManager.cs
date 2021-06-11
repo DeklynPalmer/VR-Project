@@ -17,6 +17,9 @@ public class BoardManager : MonoBehaviour
     [Tooltip("The Bottom of the window.")]
     public BoxCollider m_BottomWindowCollider;
 
+    [Tooltip("This is created when a board is removed.")]
+    public GameObject m_BoardProp;
+
     private bool m_IsEmpty;
     private bool m_IsFull;
 
@@ -131,8 +134,15 @@ public class BoardManager : MonoBehaviour
             /* Check if they are Activated. */
             if (m_Boards[i].activeSelf)
             {
+                /* Create a Dummy Board. */
+                GameObject board = Instantiate(m_BoardProp, m_Boards[i].transform.position, m_Boards[i].transform.rotation);
+                board.transform.Translate(new Vector3(0.0f, 0.25f, 0.0f));
+                board.GetComponent<Rigidbody>().AddRelativeForce(Vector3.up * 60.0f);
+
                 /* Deactivate it. */
                 m_Boards[i].SetActive(false);
+
+                
                 break;
             }
         }

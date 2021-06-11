@@ -33,6 +33,10 @@ public class Health : MonoBehaviour
                 m_Health = 0;
             }
         }
+
+        /* Keep Health at Zero if Dead. */
+        else
+            m_Health = 0;
     }
 
     /// <summary>

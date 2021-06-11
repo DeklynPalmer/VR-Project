@@ -48,6 +48,17 @@ public class ObjectInteractions : MonoBehaviour
                         Debug.Log("Grabbed a throwable item with the name: " + hit.transform.name);
                         break;
                     }
+                    else if (hit.transform.CompareTag("PlayerGun"))
+                    {
+                        m_RightGrabbedObject = hit.transform.GetComponent<Rigidbody>();
+
+                        PlayerGun playerGun = hit.transform.GetComponent<PlayerGun>();
+                        playerGun.m_IsHeld = true;
+                        playerGun.m_Controller = OVRInput.Controller.RTouch;
+
+                        Debug.Log("Grabbed a playergun item with the name: " + hit.transform.name);
+                        break;
+                    }
                 }
             }
         }
@@ -57,6 +68,11 @@ public class ObjectInteractions : MonoBehaviour
             if (m_RightGrabbedObject)
             {
                 Debug.Log("Dropped a throwable item with the name: " + m_RightGrabbedObject.name);
+
+                if (m_RightGrabbedObject.CompareTag("PlayerGun"))
+                {
+                    m_RightGrabbedObject.GetComponent<PlayerGun>().m_IsHeld = false;
+                }
 
                 m_RightGrabbedObject = null;
             }
@@ -90,6 +106,17 @@ public class ObjectInteractions : MonoBehaviour
                         Debug.Log("Grabbed a throwable item with the name:" + hit.transform.name);
                         break;
                     }
+                    else if (hit.transform.CompareTag("PlayerGun"))
+                    {
+                        m_LeftGrabbedObject = hit.transform.GetComponent<Rigidbody>();
+
+                        PlayerGun playerGun = hit.transform.GetComponent<PlayerGun>();
+                        playerGun.m_IsHeld = true;
+                        playerGun.m_Controller = OVRInput.Controller.RTouch;
+
+                        Debug.Log("Grabbed a playergun item with the name: " + hit.transform.name);
+                        break;
+                    }
                 }
             }
         }
@@ -99,6 +126,11 @@ public class ObjectInteractions : MonoBehaviour
             if (m_LeftGrabbedObject)
             {
                 Debug.Log("Dropped a throwable item with the name: " + m_LeftGrabbedObject.name);
+
+                if (m_LeftGrabbedObject.CompareTag("PlayerGun"))
+                {
+                    m_LeftGrabbedObject.GetComponent<PlayerGun>().m_IsHeld = false;
+                }
 
                 m_LeftGrabbedObject = null;
             }
