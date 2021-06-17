@@ -13,6 +13,8 @@ public class PlayerGun : MonoBehaviour
     public float m_TimeBetweenShots = 0.3f;
     private float m_TimeUntilNextShot = 0f;
 
+    private bool m_ChamberOpen = false;
+
     [Space]
     public float m_KnockbackPower = 50f;
     [Space]
@@ -25,6 +27,12 @@ public class PlayerGun : MonoBehaviour
     public Transform m_Model;
     public Transform m_HolsterPos;
     public Transform m_FirePoint;
+
+    [Space]
+    public GameObject[] m_Bullets;
+
+    [Space]
+    public Animator m_Animator;
 
     [HideInInspector]
     public bool m_IsHeld;
@@ -40,18 +48,24 @@ public class PlayerGun : MonoBehaviour
 
     void Update()
     {
-
         if (m_IsHeld)
         {
             /* Enable physics */
             m_RB.isKinematic = false;
 
             /* Fire the gun */
-            if (m_CurrentAmmoAmount > 0 && m_TimeUntilNextShot <= 0f && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, m_Controller))
+            if (!m_ChamberOpen && m_CurrentAmmoAmount > 0 && m_TimeUntilNextShot <= 0f && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, m_Controller))
             {
-                Shoot();
                 --m_CurrentAmmoAmount;
                 m_TimeUntilNextShot = m_TimeBetweenShots;
+                Shoot();
+            }
+
+            /* Open/Close the chamber */
+            if (OVRInput.GetDown(OVRInput.Button.One, m_Controller))
+            {
+                m_ChamberOpen = !m_ChamberOpen;
+                m_Animator.SetBool("Open", m_ChamberOpen);
             }
         }
         else
@@ -95,7 +109,35 @@ public class PlayerGun : MonoBehaviour
 
         /* Add recoil to the model */
         m_Model.localPosition += Vector3.back * Random.Range(m_MinKickbackDistance, m_MaxKickbackDistance);
-        //m_Model.rotation = Quaternion.Euler(m_Model.localRotation.eulerAngles + (Vector3.forward * Random.Range(m_MinRecoilAngle, m_MaxRecoilAngle));
+        
+        UpdateBulletModels();
+    }
+
+    void UpdateBulletModels()
+    {
+        if (m_CurrentAmmoAmount < m_Bullets.Length)
+        {
+            /* Deactivate the amount of bullets that where spent */
+            int amountSpent = m_Bullets.Length - m_CurrentAmmoAmount;
+            for (int i = 0; i < amountSpent; ++i)
+            {
+                m_Bullets[i].SetActive(false);
+            }
+
+            /* Activate all non spent bullets */
+            for (int i = m_Bullets.Length - 1; i > amountSpent; ++i)
+            {
+                m_Bullets[i].SetActive(true);
+            }
+        }
+        else
+        {
+            /* Make all bullets active */
+            foreach (GameObject bullet in m_Bullets)
+            {
+                bullet.SetActive(true);
+            }
+        }
     }
 
     public void AddAmmo(int amount)
@@ -107,5 +149,7 @@ public class PlayerGun : MonoBehaviour
 
         if (m_CurrentAmmoAmount < 0)
             m_CurrentAmmoAmount = 0;
+
+        UpdateBulletModels();
     }
 }
