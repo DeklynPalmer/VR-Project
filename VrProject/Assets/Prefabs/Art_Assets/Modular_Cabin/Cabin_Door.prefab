@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3422015672450346239}
   m_Layer: 0
-  m_Name: Cab_Door
+  m_Name: Cabin_Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,7 +85,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: dd57c11f6478dee419722c775c14f6d6, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 78c0d513df0653141bc1b147ca6e4fee, type: 2}
+      objectReference: {fileID: 2100000, guid: 903e55876ecc1e1488ffa704256f453e, type: 2}
     - target: {fileID: 919132149155446097, guid: dd57c11f6478dee419722c775c14f6d6, type: 3}
       propertyPath: m_Name
       value: Cabin_Wall_Doorway_001
