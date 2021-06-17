@@ -7,6 +7,7 @@ public class ObjectInteractions : MonoBehaviour
 {
 
     public Transform m_LeftHand, m_RightHand;
+
     private Rigidbody m_LeftGrabbedObject, m_RightGrabbedObject;
 
     private const float grabDistance = 0.0f;
@@ -44,6 +45,7 @@ public class ObjectInteractions : MonoBehaviour
                     if (hit.transform.CompareTag("Throwable") && hit.transform.GetComponent<Rigidbody>())
                     {
                         m_RightGrabbedObject = hit.transform.GetComponent<Rigidbody>();
+                        m_RightGrabbedObject.gameObject.layer = 8;
 
                         Debug.Log("Grabbed a throwable item with the name: " + hit.transform.name);
                         break;
@@ -59,6 +61,17 @@ public class ObjectInteractions : MonoBehaviour
                         Debug.Log("Grabbed a playergun item with the name: " + hit.transform.name);
                         break;
                     }
+                    else if (hit.transform.CompareTag("PlayerGun"))
+                    {
+                        m_RightGrabbedObject = hit.transform.GetComponent<Rigidbody>();
+
+                        PlayerGunLoader playerGunLoader = hit.transform.GetComponent<PlayerGunLoader>();
+                        playerGunLoader.m_IsHeld = true;
+                        playerGunLoader.m_Controller = OVRInput.Controller.RTouch;
+
+                        Debug.Log("Grabbed a playergunLoader item with the name: " + hit.transform.name);
+                        break;
+                    }
                 }
             }
         }
@@ -72,6 +85,12 @@ public class ObjectInteractions : MonoBehaviour
                 if (m_RightGrabbedObject.CompareTag("PlayerGun"))
                 {
                     m_RightGrabbedObject.GetComponent<PlayerGun>().m_IsHeld = false;
+                    m_RightGrabbedObject.gameObject.layer = 0;
+                }
+                else if (m_RightGrabbedObject.CompareTag("SpeedLoader"))
+                {
+                    m_RightGrabbedObject.GetComponent<PlayerGunLoader>().m_IsHeld = false;
+                    m_RightGrabbedObject.gameObject.layer = 0;
                 }
 
                 m_RightGrabbedObject = null;
@@ -102,6 +121,7 @@ public class ObjectInteractions : MonoBehaviour
                     if (hit.transform.CompareTag("Throwable") && hit.transform.GetComponent<Rigidbody>())
                     {
                         m_LeftGrabbedObject = hit.transform.GetComponent<Rigidbody>();
+                        m_LeftGrabbedObject.gameObject.layer = 8;
 
                         Debug.Log("Grabbed a throwable item with the name:" + hit.transform.name);
                         break;
@@ -112,9 +132,20 @@ public class ObjectInteractions : MonoBehaviour
 
                         PlayerGun playerGun = hit.transform.GetComponent<PlayerGun>();
                         playerGun.m_IsHeld = true;
-                        playerGun.m_Controller = OVRInput.Controller.RTouch;
+                        playerGun.m_Controller = OVRInput.Controller.LTouch;
 
                         Debug.Log("Grabbed a playergun item with the name: " + hit.transform.name);
+                        break;
+                    }
+                    else if (hit.transform.CompareTag("SpeedLoader"))
+                    {
+                        m_LeftGrabbedObject = hit.transform.GetComponent<Rigidbody>();
+
+                        PlayerGunLoader playerGunLoader = hit.transform.GetComponent<PlayerGunLoader>();
+                        playerGunLoader.m_IsHeld = true;
+                        playerGunLoader.m_Controller = OVRInput.Controller.LTouch;
+
+                        Debug.Log("Grabbed a playergunloader item with the name: " + hit.transform.name);
                         break;
                     }
                 }
@@ -130,6 +161,12 @@ public class ObjectInteractions : MonoBehaviour
                 if (m_LeftGrabbedObject.CompareTag("PlayerGun"))
                 {
                     m_LeftGrabbedObject.GetComponent<PlayerGun>().m_IsHeld = false;
+                    m_LeftGrabbedObject.gameObject.layer = 0;
+                }
+                else if (m_LeftGrabbedObject.CompareTag("SpeedLoader"))
+                {
+                    m_LeftGrabbedObject.GetComponent<PlayerGunLoader>().m_IsHeld = false;
+                    m_LeftGrabbedObject.gameObject.layer = 0;
                 }
 
                 m_LeftGrabbedObject = null;
@@ -176,6 +213,50 @@ public class ObjectInteractions : MonoBehaviour
             eulerRot *= 0.95f;
             eulerRot *= Mathf.Deg2Rad;
             m_LeftGrabbedObject.angularVelocity = eulerRot / Time.fixedDeltaTime;
+        }
+    }
+
+    public void DropHeldObject(OVRInput.Controller controller)
+    {
+        if (controller == OVRInput.Controller.RTouch)
+        {
+            if (m_RightGrabbedObject)
+            {
+                Debug.Log("Dropped a throwable item with the name: " + m_RightGrabbedObject.name);
+
+                if (m_RightGrabbedObject.tag == "PlayerGun")
+                {
+                    m_RightGrabbedObject.GetComponent<PlayerGun>().m_IsHeld = false;
+                    m_RightGrabbedObject.gameObject.layer = 0;
+                }
+                else if (m_RightGrabbedObject.tag == "SpeedLoader")
+                {
+                    m_RightGrabbedObject.GetComponent<PlayerGunLoader>().m_IsHeld = false;
+                    m_RightGrabbedObject.gameObject.layer = 0;
+                }
+
+                m_RightGrabbedObject = null;
+            }
+        }
+        else if (controller == OVRInput.Controller.LTouch)
+        {
+            if (m_LeftGrabbedObject)
+            {
+                Debug.Log("Dropped a throwable item with the name: " + m_LeftGrabbedObject.name);
+
+                if (m_LeftGrabbedObject.tag == "PlayerGun")
+                {
+                    m_LeftGrabbedObject.GetComponent<PlayerGun>().m_IsHeld = false;
+                    m_LeftGrabbedObject.gameObject.layer = 0;
+                }
+                else if (m_LeftGrabbedObject.tag == "SpeedLoader")
+                {
+                    m_LeftGrabbedObject.GetComponent<PlayerGunLoader>().m_IsHeld = false;
+                    m_LeftGrabbedObject.gameObject.layer = 0;
+                }
+
+                m_LeftGrabbedObject = null;
+            }
         }
     }
 }
