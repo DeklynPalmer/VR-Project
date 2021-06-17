@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
 
     public float m_PlayerHeight = 1.5f;
     public float m_MoveSpeed = 180f;
+    public float m_TurnSpeed = 180f;
 
     public Transform m_Head;
     public Transform m_BaseCollider;
@@ -34,7 +35,8 @@ public class PlayerMovement : MonoBehaviour
         m_RB.velocity = m_MoveDir * m_MoveSpeed * Time.deltaTime;
 
         /* Get the players height */
-        m_PlayerHeight = transform.localPosition.y + m_Head.localPosition.y;
+        //m_PlayerHeight = transform.localPosition.y + m_Head.localPosition.y;
+        m_PlayerHeight = m_Head.localPosition.y;
 
         /* Position the base collider */
         m_BaseCollider.position = m_Head.position - (Vector3.up * (m_PlayerHeight - 0.1f));
@@ -42,6 +44,9 @@ public class PlayerMovement : MonoBehaviour
         /* Position the holster */
         m_Holster.position = m_Head.position - (Vector3.up * (m_PlayerHeight * 0.5f));
         m_Holster.rotation = Quaternion.LookRotation(m_2DForwardDir, Vector3.up);
+
+        /* Turn the player */
+        m_RB.rotation = Quaternion.Euler(0, m_RB.rotation.eulerAngles.y + (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch).x * m_TurnSpeed * Time.deltaTime), 0);
     }
 
     /// <summary>
