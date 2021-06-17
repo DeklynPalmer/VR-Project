@@ -68,6 +68,13 @@ public class EntityManager : MonoBehaviour
                 /* Reference the Entity Manager. */
                 board.GetComponent<Board>().SetEntityManager(this);
 
+                /* Go through the Board Managers. */
+                for(int i = 0; i <m_BoardManagers.Length; i++)
+                {
+                    /* Attach the Board. */
+                    m_BoardManagers[i].AttachPlacableBoard(board);
+                }
+
                 /* Cache it. */
                 m_BoardSpawnCache[m_BoardSpawnpoints[index]] = board;
 
@@ -92,13 +99,16 @@ public class EntityManager : MonoBehaviour
                 /* Create an Instance at the Board Location. */
                 GameObject alien = Instantiate(m_Alien, m_AlienSpawnpoints[index].position, m_AlienSpawnpoints[index].rotation);
 
+                /* Set Alien Targets. */
                 Alien alienScript = alien.GetComponent<Alien>();
                 alienScript.m_Managers = m_BoardManagers;
                 alienScript.m_Player = m_Player.transform;
 
+                /* Attach this Enemy to the Board Managers. */
                 for (int i = 0; i < m_BoardManagers.Length; i++)
                     m_BoardManagers[i].AttachEnemy(alien);
 
+                /* Reset. */
                 m_AlienSpawnTime = 0.0f;
                 m_AlienSpawnCount++;
             }
@@ -120,6 +130,13 @@ public class EntityManager : MonoBehaviour
 
                     /* Reference the Entity Manager. */
                     board.GetComponent<Board>().SetEntityManager(this);
+
+                    /* Go through the Board Managers. */
+                    for (int i = 0; i < m_BoardManagers.Length; i++)
+                    {
+                        /* Attach the Board. */
+                        m_BoardManagers[i].AttachPlacableBoard(board);
+                    }
 
                     /* Cache it. */
                     m_BoardSpawnCache[m_BoardSpawnpoints[index]] = board;

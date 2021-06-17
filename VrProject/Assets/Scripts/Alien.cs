@@ -19,13 +19,20 @@ public class Alien : MonoBehaviour
     [Header("Damage Values:")]
     public int m_AttackDamage = 10;
 
+    [Header("Effects:")]
+    public ParticleSystem m_HitEffect;
+
     private BoardManager m_TargetWindow;
     private NavMeshAgent m_Agent;
+    private Health m_Health;
 
     void Start()
     {
         /* Set the Max Attack Time. */
         m_MaxAttackTime = m_AttackTime;
+
+        /* Get the Health Script. */
+        m_Health = GetComponent<Health>();
 
         /* Get the Navagation Mesh Agent. */
         m_Agent = GetComponent<NavMeshAgent>();
@@ -51,39 +58,58 @@ public class Alien : MonoBehaviour
 
     void Update()
     {
-        if (m_TargetWindow)
+        /* If the Alien is Alive. */
+        if (!m_Health.IsDead())
         {
-            /* If the Window isn't Empty. */
-            if (!m_TargetWindow.IsWindowEmpty())
+            if (m_TargetWindow)
             {
-                /* If the Attack Time hasn't fully elapsed. */
-                if (m_AttackTime < m_MaxAttackTime)
-                    m_AttackTime += Time.deltaTime;
+                /* If the Window isn't Empty. */
+                if (!m_TargetWindow.IsWindowEmpty())
+                {
+                    /* If the Attack Time hasn't fully elapsed. */
+                    if (m_AttackTime < m_MaxAttackTime)
+                        m_AttackTime += Time.deltaTime;
 
-                /* If it has. */
+                    /* If it has. */
+                    else
+                    {
+                        /* Set the Proper Targets. */
+                        m_TargetWindow.DetachBoard(gameObject);
+                        m_Agent.SetDestination(m_TargetWindow.transform.position);
+
+                        /* Reset the Attack Time. */
+                        m_AttackTime = 0.0f;
+                    }
+                }
+
+                /* If the Window is Empty. */
                 else
                 {
-                    /* Set the Proper Targets. */
-                    m_TargetWindow.DetachBoard(gameObject);
-                    m_Agent.SetDestination(m_TargetWindow.transform.position);
-
-                    /* Reset the Attack Time. */
-                    m_AttackTime = 0.0f;
+                    /* No Need to focus on the Window. */
+                    m_TargetWindow = null;
                 }
             }
 
-            /* If the Window is Empty. */
             else
             {
-                /* No Need to focus on the Window. */
-                m_TargetWindow = null;
+                /* Move onto the Player. */
+                m_Agent.SetDestination(m_Player.position);
             }
         }
 
         else
         {
-            /* Move onto the Player. */
-            m_Agent.SetDestination(m_Player.position);
+            /* if we have a particle effect. */
+            if(m_HitEffect)
+            {
+                /* If we aren't playing the hit effect. */
+                if(!m_HitEffect.isPlaying)
+                {
+                    ParticleSystem.MainModule module = m_HitEffect.main;
+                    module.startSpeed = 2.0f;
+                    m_HitEffect.Play();
+                }
+            }
         }
     }
 

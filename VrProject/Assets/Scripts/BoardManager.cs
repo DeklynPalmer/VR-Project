@@ -9,6 +9,7 @@ public class BoardManager : MonoBehaviour
 
     private List<GameObject> m_Enemies = new List<GameObject>();
     private Dictionary<GameObject, bool> m_EnemiesInside = new Dictionary<GameObject, bool>();
+    private List<GameObject> m_PlacableBoards = new List<GameObject>();
 
     [Header("Window Instances:")]
     [Tooltip("All of the Boards attached to the Window.")]
@@ -59,6 +60,20 @@ public class BoardManager : MonoBehaviour
             /* Check if it is one of the Enemies. */
             if (collider.gameObject == m_Enemies[i])
                 m_EnemiesInside[m_Enemies[i]] = true;
+        }
+
+        /* Go through the Placable Boards. */
+        for (int i = 0; i < m_Enemies.Count; i++)
+        {
+            /* Check if it is one of the Boards. */
+            if (collider.gameObject == m_PlacableBoards[i])
+            {
+                AttachBoard(m_PlacableBoards[i]);
+                Destroy(m_PlacableBoards[i]);
+                m_PlacableBoards.RemoveAt(i);
+
+                break;
+            }
         }
     }
 
@@ -167,6 +182,14 @@ public class BoardManager : MonoBehaviour
                 return true;
         }
 
+        /* Go through the placable boards. */
+        for(int i = 0; i < m_PlacableBoards.Count; i++)
+        {
+            /* if its a board we are looking for. */
+            if (gameObject == m_PlacableBoards[i])
+                return true;
+        }
+
         /* If all else fails, not allowed. */
         return false;
     }
@@ -201,5 +224,15 @@ public class BoardManager : MonoBehaviour
         /* Remove and Enemy from the List and Dictionary. */
         m_EnemiesInside.Remove(gameObject);
         m_Enemies.Remove(gameObject);
+    }
+
+    /// <summary>
+    /// Attaches a Placable Board.
+    /// </summary>
+    /// <param name="gameObject"></param>
+    public void AttachPlacableBoard(GameObject gameObject)
+    {
+        /* Add the board. */
+        m_PlacableBoards.Add(gameObject);
     }
 }
