@@ -9,9 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 973565965735141503}
+  - component: {fileID: 4116953215521874454}
+  - component: {fileID: 4466682508402906597}
+  - component: {fileID: 2401858389638733680}
   m_Layer: 0
-  m_Name: Prop_Plank_01
-  m_TagString: Untagged
+  m_Name: Prop_Plank_Interact
+  m_TagString: Throwable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,13 +34,41 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &5594924070549192169
+--- !u!114 &4116953215521874454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7896871428340863914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1386c7d4a9c691144a94fa90da82ef50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!54 &4466682508402906597
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7896871428340863914}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &2401858389638733680
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9038332724632654359}
+  m_GameObject: {fileID: 7896871428340863914}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
@@ -103,13 +134,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Prop_Plank_01_01
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4f4dd503d33e4884e8a2e06f94c66684, type: 3}
+      propertyPath: m_TagString
+      value: Throwable
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f4dd503d33e4884e8a2e06f94c66684, type: 3}
---- !u!1 &9038332724632654359 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4f4dd503d33e4884e8a2e06f94c66684, type: 3}
-  m_PrefabInstance: {fileID: 8192032776531849030}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8513293225509046445 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4f4dd503d33e4884e8a2e06f94c66684, type: 3}

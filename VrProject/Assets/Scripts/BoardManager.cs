@@ -62,17 +62,23 @@ public class BoardManager : MonoBehaviour
                 m_EnemiesInside[m_Enemies[i]] = true;
         }
 
+        Debug.Log(m_PlacableBoards.Count);
+
         /* Go through the Placable Boards. */
-        for (int i = 0; i < m_Enemies.Count; i++)
+        for (int i = 0; i < m_PlacableBoards.Count; i++)
         {
             /* Check if it is one of the Boards. */
             if (collider.gameObject == m_PlacableBoards[i])
             {
-                AttachBoard(m_PlacableBoards[i]);
-                Destroy(m_PlacableBoards[i]);
-                m_PlacableBoards.RemoveAt(i);
+                Debug.Log("Seems like a Plank has been confirmed to be removed.");
+                if (!m_IsFull)
+                {
+                    AttachBoard(m_PlacableBoards[i]);
+                    Destroy(m_PlacableBoards[i]);
+                    m_PlacableBoards.RemoveAt(i);
 
-                break;
+                    break;
+                }
             }
         }
     }
@@ -118,7 +124,7 @@ public class BoardManager : MonoBehaviour
             return;
         
         /* Go through the Boards. */
-        for(int i = m_Boards.Length; i >= 0; i--)
+        for(int i = m_Boards.Length - 1; i >= 0; i--)
         {
             /* Check if they are Deactivated. */
             if (!m_Boards[i].activeSelf)
@@ -152,7 +158,7 @@ public class BoardManager : MonoBehaviour
                 /* Create a Dummy Board. */
                 GameObject board = Instantiate(m_BoardProp, m_Boards[i].transform.position, m_Boards[i].transform.rotation);
                 board.transform.Translate(new Vector3(0.0f, 0.25f, 0.0f));
-                board.GetComponent<Rigidbody>().AddRelativeForce(Vector3.up * 60.0f);
+                board.GetComponentInChildren<Rigidbody>().AddRelativeForce(Vector3.up * 60.0f);
 
                 /* Deactivate it. */
                 m_Boards[i].SetActive(false);

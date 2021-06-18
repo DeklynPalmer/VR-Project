@@ -11,6 +11,9 @@ public class Alien : MonoBehaviour
     [Header("Windows:")]
     public BoardManager[] m_Managers;
 
+    [Header("Animator:")]
+    public Animator m_Animator;
+
     [Header("Timings:")]
     [Tooltip("In Seconds.")]
     public float m_AttackTime = 3.0f;
@@ -63,30 +66,42 @@ public class Alien : MonoBehaviour
         {
             if (m_TargetWindow)
             {
-                /* If the Window isn't Empty. */
-                if (!m_TargetWindow.IsWindowEmpty())
-                {
-                    /* If the Attack Time hasn't fully elapsed. */
-                    if (m_AttackTime < m_MaxAttackTime)
-                        m_AttackTime += Time.deltaTime;
+                m_Agent.SetDestination(m_TargetWindow.transform.position);
 
-                    /* If it has. */
+                /* Get the distance from the AI to the Window. */
+                float distance = Vector3.Distance(transform.position, m_TargetWindow.transform.position);
+
+                Debug.Log(distance + " " + m_Agent.stoppingDistance);
+
+                if (distance <= m_Agent.stoppingDistance + 0.25f)
+                {
+                    /* If the Window isn't Empty. */
+                    if (!m_TargetWindow.IsWindowEmpty())
+                    {
+                        m_Animator.SetBool("isAttacking", true);
+
+                        /* If the Attack Time hasn't fully elapsed. */
+                        if (m_AttackTime < m_MaxAttackTime)
+                            m_AttackTime += Time.deltaTime;
+
+                        /* If it has. */
+                        else
+                        {
+                            /* Set the Proper Targets. */
+                            m_TargetWindow.DetachBoard(gameObject);
+
+                            /* Reset the Attack Time. */
+                            m_AttackTime = 0.0f;
+                        }
+                    }
+
+                    /* If the Window is Empty. */
                     else
                     {
-                        /* Set the Proper Targets. */
-                        m_TargetWindow.DetachBoard(gameObject);
-                        m_Agent.SetDestination(m_TargetWindow.transform.position);
-
-                        /* Reset the Attack Time. */
-                        m_AttackTime = 0.0f;
+                        m_Animator.SetBool("isAttacking", false);
+                        /* No Need to focus on the Window. */
+                        m_TargetWindow = null;
                     }
-                }
-
-                /* If the Window is Empty. */
-                else
-                {
-                    /* No Need to focus on the Window. */
-                    m_TargetWindow = null;
                 }
             }
 
@@ -110,18 +125,23 @@ public class Alien : MonoBehaviour
                     m_HitEffect.Play();
                 }
             }
+
+            Destroy(gameObject);
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
         /* If the Collider that has entered the box trigger is attached to the Player. */
-        if (other.gameObject.name == m_Player.name)
+        if (other.gameObject == m_Player.gameObject)
         {
             /* If we aren't targeting the window. */
             if(!m_TargetWindow)
             {
                 Debug.Log("Trying to Attack the Player.");
+
+                m_Animator.SetBool("isAttacking", true);
+
                 /* If the Attack Time hasn't fully elapsed. */
                 if (m_AttackTime < m_MaxAttackTime)
                     m_AttackTime += Time.deltaTime;
@@ -149,6 +169,7 @@ public class Alien : MonoBehaviour
             /* If we aren't targeting the window. */
             if (!m_TargetWindow)
             {
+                m_Animator.SetBool("isAttacking", false);
                 /* Reset the Attack Timer. */
                 m_AttackTime = 0.0f;
             }
