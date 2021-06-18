@@ -100,6 +100,11 @@ public class PlayerGun : MonoBehaviour
                 /* Damage any hit enemy */
                 hit.transform.GetComponent<Health>().DetachHealth(m_Damage);
             }
+            else if (hit.transform.CompareTag("Player"))
+            {
+                /* Damage any hit enemy */
+                hit.transform.GetComponent<Health>().DetachHealth(99999);
+            }
             else if (hit.transform.CompareTag("Throwable"))
             {
                 /* Apply a force to any interactable object hit */

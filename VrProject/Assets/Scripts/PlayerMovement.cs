@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 [RequireComponent(typeof(Rigidbody))]
@@ -20,6 +21,9 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody m_RB;
 
+    [Space]
+    public Health m_Health;
+
     void Start()
     {
         m_RB = GetComponent<Rigidbody>();
@@ -27,6 +31,10 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        /* Restart the scene when the player dies */
+        if (m_Health.IsDead())
+            SceneManager.LoadScene(0);
+
         m_2DForwardDir = Quaternion.Euler(0, m_Head.rotation.eulerAngles.y, 0) * Vector3.forward;
 
         m_MoveDir = GetMoveDirection();

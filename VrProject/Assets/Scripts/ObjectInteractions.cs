@@ -7,6 +7,7 @@ public class ObjectInteractions : MonoBehaviour
 {
 
     public Transform m_LeftHand, m_RightHand;
+    public GameObject m_LeftHandModel, m_RightHandModel;
 
     private Rigidbody m_LeftGrabbedObject, m_RightGrabbedObject;
 
@@ -172,6 +173,12 @@ public class ObjectInteractions : MonoBehaviour
                 m_LeftGrabbedObject = null;
             }
         }
+
+
+
+        /* Enable/Disable the hand models */
+        m_RightHandModel.SetActive(!m_RightGrabbedObject);
+        m_LeftHandModel.SetActive(!m_LeftGrabbedObject);
     }
 
     private void FixedUpdate()
